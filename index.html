@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Gioco Goloso - Recensione & Vinci</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="https://beautri.it/favicon.ico">
+  
+  <!-- FontAwesome per le icone -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Inter per conformità con il menù digitale -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Libreria QRCode.js per generare i QR code al volo nel browser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nOMQVqgTCffYd1OhcQsJH9EB434GN5E1x8RYc0lh3c98qGtHSDS51Cl8wCyeQbDPV2ARflu8Y1Mw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <style>
+    /* ==========================================================================
+       STYLE SYSTEM - PREMIUM CHOCOLATE THEMING (VANILLA CSS)
+       ========================================================================== */
+
+    :root {
+      /* Color Palette */
+      --bg-main: #f5f0e6;            /* Panna / Cream light background */
+      --choc-dark: #3d2314;          /* Cioccolato Fondente */
+      --choc-deep: #211107;          /* Cioccolato Extra Dark */
+      --choc-medium: #543320;        /* Cioccolato al Latte */
+      --gold: #eab308;               /* Oro Vibrante */
+      --gold-dark: #ca8a04;          /* Oro Scuro */
+      --gold-light: #fef08a;         /* Oro Chiaro */
+      --white: #ffffff;
+      --text-dark: #1f2937;
+      --text-muted: #6b7280;
+      
+      /* Wheel segment colors (Bacio and Lindor) */
+      --color-bacio: #132a4f;        /* Blu scuro per il Bacio */
+      --color-lindor: #8b1319;       /* Rosso/Cremisi per il Lindor */
+      
+      /* Fonts */
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      
+      /* Depth Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(61, 35, 20, 0.15), 0 10px 10px -5px rgba(61, 35, 20, 0.1);
+      --shadow-gold: 0 0 15px rgba(234, 179, 8, 0.4);
+      
+      /* Transitions */
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reset & Global */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-dark);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Warning banner when parameters are missing */
+    .warning-banner {
+      background-color: #fef2f2;
+      color: #991b1b;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: center;
+      border-bottom: 1.5px dashed #fca5a5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      z-index: 100;
+      position: relative;
+    }
+
+    /* ==========================================================================
+       HEADER SECTION WITH DRIPPING CHOCOLATE
+       ========================================================================== */
+
+    .app-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .chocolate-header {
+      position: relative;
+      background-color: var(--choc-dark);
+      text-align: center;
+      padding: 4rem 1.5rem 6.5rem; /* Spazio per l'effetto del cioccolato che cola */
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    .dripping-svg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 120px;
+      z-index: 1;
+    }
+
+    .header-text-container {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .badge-novita {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--gold);
+      color: var(--choc-dark);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-md);
+      text-transform: uppercase;
+    }
+
+    .main-title {
+      font-size: clamp(2rem, 6vw, 3.25rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .main-subtitle {
+      font-size: clamp(0.95rem, 3.5vw, 1.15rem);
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ==========================================================================
+       CONTENT LAYOUT
+       ========================================================================== */
+
+    .content-container {
+      flex: 1;
+      max-width: 640px;
+      width: 100%;
+      margin: -3.5rem auto 3rem; /* sormonta leggermente il cioccolato del header */
+      padding: 0 1.25rem;
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Generic Section Styles */
+    .info-section, .review-section, .wheel-section {
+      width: 100%;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    /* ==========================================================================
+       COME FUNZIONA CARDS
+       ========================================================================== */
+
+    .info-section {
+      background-color: var(--choc-dark);
+      border-radius: 2.25rem;
+      padding: 2rem 1.5rem;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+
+    .step-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 1.5rem;
+      padding: 1.5rem 0.75rem;
+      text-align: center;
+      color: var(--white);
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .step-number {
+      background-color: var(--gold);
+      color: var(--choc-dark);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step-icon {
+      font-size: 1.25rem;
+      color: var(--gold-light);
+      margin-bottom: 0.5rem;
+      opacity: 0.85;
+    }
+
+    .step-card h3 {
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .step-card p {
+      font-size: 0.55rem;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .animate-spin-slow {
+      animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive steps per schermi stretti */
+    @media (max-width: 500px) {
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .step-card {
+        flex-direction: row;
+        text-align: left;
+        padding: 1rem 1.25rem;
+        gap: 1rem;
+      }
+      
+      .step-number {
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+      
+      .step-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0;
+        width: 24px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      
+      .step-card h3 {
+        margin-bottom: 0.15rem;
+        font-size: 0.8rem;
+      }
+      
+      .step-card p {
+        font-size: 0.7rem;
+      }
+      
+      .step-card > div:last-child {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    /* ==========================================================================
+       REVIEW (QR CODE CARD)
+       ========================================================================== */
+
+    .review-section {
+      position: relative;
+    }
+
+    .qr-container-card {
+      background-color: var(--white);
+      border-radius: 2.25rem;
+      padding: 2.5rem 2rem 2rem;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      border: 1px solid rgba(61, 35, 20, 0.05);
+    }
+
+    .qr-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--gold);
+      color: var(--choc-dark);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      padding: 0.35rem 1.25rem;
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-md);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .qr-flex-layout {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .qr-code-wrapper {
+      background-color: var(--white);
+      padding: 1rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 20px rgba(61, 35, 20, 0.06);
+      border: 4px solid var(--gold-light);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .qr-code-wrapper:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 30px rgba(61, 35, 20, 0.1);
+    }
+
+    .qrcode-graphic {
+      width: 140px;
+      height: 140px;
+    }
+
+    .qrcode-graphic img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .qr-text-wrapper {
+      flex-grow: 1;
+    }
+
+    .qr-text-wrapper h3 {
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--choc-dark);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .qr-text-wrapper p {
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    .highlight-client {
+      font-weight: 800;
+      color: var(--choc-medium);
+    }
+
+    .stars-rating {
+      display: flex;
+      gap: 0.25rem;
+      color: var(--gold);
+      font-size: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .mobile-review-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: var(--choc-dark);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      padding: 0.75rem 1.25rem;
+      border-radius: 1rem;
+      transition: background-color var(--transition-fast), transform var(--transition-fast);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-review-button:hover {
+      background-color: var(--choc-deep);
+      transform: translateY(-1px);
+    }
+
+    .mobile-review-button:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 580px) {
+      .qr-flex-layout {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.25rem;
+      }
+      
+      .stars-rating {
+        justify-content: center;
+      }
+      
+      .qr-text-wrapper h3 {
+        justify-content: center;
+      }
+    }
+
+    /* ==========================================================================
+       WHEEL OF FORTUNE SECTION
+       ========================================================================== */
+
+    .wheel-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wheel-heading {
+      font-size: 1.75rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--choc-dark);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .wheel-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -12px;
+      z-index: 10;
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 25px solid var(--gold);
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    }
+
+    .wheel-pointer::after {
+      content: '';
+      position: absolute;
+      top: -27px;
+      left: -20px;
+      width: 40px;
+      height: 8px;
+      background-color: var(--gold-dark);
+      border-radius: 4px;
+    }
+
+    .wheel-outer {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      box-shadow: 0 10px 30px rgba(61, 35, 20, 0.25), 0 0 0 12px var(--gold);
+      background-color: var(--choc-dark);
+      overflow: hidden;
+      margin-bottom: 2rem;
+      border: 4px solid var(--choc-dark);
+    }
+
+    #wheel-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .wheel-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background-color: var(--gold);
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+      border: 4px solid var(--choc-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .wheel-center-logo {
+      font-size: 1.5rem;
+      color: var(--choc-dark);
+    }
+
+    /* SPIN BUTTON */
+    .spin-btn {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: var(--choc-dark);
+      border: none;
+      font-family: var(--font-family);
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      padding: 1.125rem 2.5rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-xl), var(--shadow-gold), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .spin-btn:hover:not(:disabled) {
+      transform: scale(1.03);
+      filter: brightness(1.05);
+      box-shadow: 0 15px 25px -5px rgba(61, 35, 20, 0.25), 0 0 20px rgba(234, 179, 8, 0.5);
+    }
+
+    .spin-btn:active:not(:disabled) {
+      transform: scale(0.98);
+      box-shadow: 0 5px 15px rgba(61, 35, 20, 0.2);
+    }
+
+    .spin-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: linear-gradient(135deg, var(--text-muted) 0%, #4b5563 100%);
+      color: #9ca3af;
+      box-shadow: none;
+    }
+
+    /* ==========================================================================
+       PS BOX (POST SCRIPTUM)
+       ========================================================================== */
+
+    .ps-box {
+      background-color: var(--choc-dark);
+      color: var(--white);
+      border-radius: 2.25rem;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      position: relative;
+      width: 100%;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .ps-badge {
+      background-color: var(--gold);
+      color: var(--choc-dark);
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: var(--shadow-md);
+    }
+
+    .ps-box h3 {
+      color: var(--gold);
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .ps-box p {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 500;
+    }
+
+    /* ==========================================================================
+       MODAL VICTORY CARD & ANIMATIONS
+       ========================================================================== */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(33, 17, 7, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+    }
+
+    .modal-card {
+      background: var(--white);
+      border-radius: 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      text-align: center;
+      animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        transform: translateY(30px) scale(0.95);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      background-color: var(--choc-dark);
+      padding: 2.5rem 1.5rem 1.5rem;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .trophy-badge {
+      background-color: var(--gold);
+      color: var(--choc-dark);
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+      animation: pulseGold 2s infinite;
+    }
+
+    @keyframes pulseGold {
+      0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.5); }
+      70% { box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+    }
+
+    .modal-body {
+      padding: 2rem 2rem 1.5rem;
+    }
+
+    .modal-body h2 {
+      color: var(--choc-dark);
+      font-size: 1.75rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .win-description {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .prize-display-card {
+      background-color: var(--bg-main);
+      border-radius: 1.75rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border: 2px dashed rgba(61, 35, 20, 0.15);
+    }
+
+    .prize-icon {
+      font-size: 2.25rem;
+      color: var(--choc-dark);
+    }
+
+    .prize-title {
+      font-size: 2.25rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--choc-dark);
+      text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .instruction-box {
+      background-color: rgba(234, 179, 8, 0.08);
+      border-left: 4px solid var(--gold);
+      border-radius: 1rem;
+      padding: 1rem 1.25rem;
+      text-align: left;
+    }
+
+    .instruction-title {
+      font-weight: 800;
+      color: var(--choc-dark);
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .instruction-text {
+      font-size: 0.8rem;
+      color: var(--choc-medium);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .modal-footer {
+      padding: 0 2rem 2.5rem;
+    }
+
+    .close-modal-button {
+      width: 100%;
+      background-color: var(--choc-dark);
+      color: var(--white);
+      border: none;
+      font-family: var(--font-family);
+      font-size: 0.95rem;
+      font-weight: 800;
+      padding: 1rem;
+      border-radius: 1.5rem;
+      cursor: pointer;
+      transition: background-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .close-modal-button:hover {
+      background-color: var(--choc-deep);
+      transform: translateY(-1px);
+    }
+
+    .close-modal-button:active {
+      transform: translateY(0);
+    }
+
+    /* ==========================================================================
+       APP FOOTER
+       ========================================================================== */
+
+    .app-footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- WARNING BANNER FOR MISSING PARAMS -->
+  <div id="param-warning" class="warning-banner hidden">
+    <i class="fa-solid fa-circle-info"></i>
+    <span>Modalità anteprima. Aggiungi i parametri <strong>?n=Nome</strong> e <strong>&r=LinkGoogle</strong> all'indirizzo per personalizzare la pagina.</span>
+  </div>
+
+  <div class="app-wrapper">
+    
+    <!-- DRIPPING CHOCOLATE HEADER -->
+    <div class="chocolate-header">
+      <svg class="dripping-svg" viewBox="0 0 1440 240" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0 0H1440V120C1440 120 1380 160 1320 160C1260 160 1220 110 1160 110C1100 110 1060 150 1000 150C940 150 900 100 840 100C780 100 740 170 680 170C620 170 580 120 520 120C460 120 420 160 360 160C300 160 260 100 200 100C140 100 100 140 0 140V0Z" fill="url(#chocolate-grad)" filter="drop-shadow(0px 8px 16px rgba(61, 35, 20, 0.4))"/>
+        <path d="M0 0H1440V100C1440 100 1395 130 1350 130C1305 130 1275 90 1230 90C1185 90 1155 125 1110 125C1065 125 1035 85 990 85C945 85 915 135 870 135C825 135 795 85 750 85C705 85 675 125 630 125C585 125 555 90 510 90C465 90 435 120 390 120C345 120 315 80 270 80C225 80 195 110 150 110C105 110 75 80 0 80V0Z" fill="url(#chocolate-grad-light)" opacity="0.3"/>
+        <defs>
+          <linearGradient id="chocolate-grad" x1="720" y1="0" x2="720" y2="240" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#241107" />
+            <stop offset="60%" stop-color="#3d2314" />
+            <stop offset="100%" stop-color="#2f1a0e" />
+          </linearGradient>
+          <linearGradient id="chocolate-grad-light" x1="720" y1="0" x2="720" y2="135" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#543320" />
+            <stop offset="100%" stop-color="#3d2314" />
+          </linearGradient>
+        </defs>
+      </svg>
+      
+      <div class="header-text-container">
+        <span class="badge-novita"><i class="fa-solid fa-sparkles"></i> NOVITÀ ESCLUSIVA <i class="fa-solid fa-sparkles"></i></span>
+        <h1 class="main-title">UN GIOCO GOLOSO</h1>
+        <p class="main-subtitle">La tua opinione vale cioccolato... scopri quale ti aspetta!</p>
+      </div>
+    </div>
+
+    <!-- MAIN BODY CONTENT -->
+    <main class="content-container">
+      
+      <!-- COME FUNZIONA -->
+      <section class="info-section">
+        <h2 class="section-title"><i class="fa-solid fa-gift"></i> COME FUNZIONA</h2>
+        <div class="steps-grid">
+          
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-icon"><i class="fa-solid fa-star-half-stroke"></i></div>
+            <h3>LASCIA UNA RECENSIONE</h3>
+            <p>Scansiona il QR o tocca la scheda per raccontare la tua esperienza</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-icon"><i class="fa-solid fa-dharmachakra animate-spin-slow"></i></div>
+            <h3>GIRA LA RUOTA</h3>
+            <p>Scopri quale dolcezza ti aspetta!</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-icon"><i class="fa-solid fa-trophy"></i></div>
+            <h3>RITIRA IL PREMIO</h3>
+            <p>Goditi il tuo cioccolatino alla cassa!</p>
+          </div>
+          
+        </div>
+      </section>
+
+      <!-- SEZIONE RECENSIONE (QR CODE) -->
+      <section class="review-section">
+        <div class="qr-container-card">
+          <div class="qr-badge">
+            <i class="fa-solid fa-mobile-screen-button"></i> Scansiona qui!
+          </div>
+          
+          <div class="qr-flex-layout">
+            <div class="qr-code-wrapper">
+              <a href="#" id="review-link-qr" target="_blank" class="qr-click-target">
+                <div id="qrcode" class="qrcode-graphic"></div>
+              </a>
+            </div>
+            
+            <div class="qr-text-wrapper">
+              <h3><i class="fa-solid fa-qrcode"></i> LASCIA QUI LA TUA RECENSIONE</h3>
+              <p>Inquadra con il tuo telefono e lascia una recensione sulla tua esperienza da <span id="client-name" class="highlight-client">Beautrì</span></p>
+              
+              <div class="stars-rating">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              
+              <a href="#" id="review-link-btn" target="_blank" class="mobile-review-button">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Clicca qui per recensire
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEZIONE RUOTA DELLA FORTUNA -->
+      <section class="wheel-section">
+        <h2 class="wheel-heading">🎰 TENTA LA FORTUNA! 🎰</h2>
+        
+        <div class="wheel-container">
+          <div class="wheel-pointer"></div>
+          
+          <div class="wheel-outer">
+            <canvas id="wheel-canvas" width="400" height="400"></canvas>
+            <div class="wheel-center">
+              <div class="wheel-center-logo">
+                <i class="fa-solid fa-candy-cane"></i>
+              </div>
+            </div>
+          </div>
+          
+          <button id="spin-button" class="spin-btn">
+            <span class="btn-icon">🎰</span> GIRA LA RUOTA!
+          </button>
+        </div>
+
+        <!-- P.S. Box -->
+        <div class="ps-box">
+          <span class="ps-badge">P.S.</span>
+          <h3>★ HAI GIÀ LASCIATO UNA RECENSIONE? ★</h3>
+          <p>Fantastico! Gira la ruota e goditi il tuo cioccolatino! 🍫</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      <p>&copy; 2026 Piattaforma Retention. Tutti i diritti riservati.</p>
+    </footer>
+
+  </div>
+
+  <!-- VICTORY MODAL OVERLAY -->
+  <div id="victory-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="trophy-badge"><i class="fa-solid fa-gift"></i></div>
+      </div>
+      
+      <div class="modal-body">
+        <h2>COMPLIMENTI! 🎉</h2>
+        <p class="win-description">Hai girato la ruota della fortuna ed è uscito:</p>
+        
+        <div class="prize-display-card">
+          <div class="prize-icon"><i class="fa-solid fa-cookie-bite"></i></div>
+          <span id="prize-name" class="prize-title">BACIO</span>
+        </div>
+        
+        <div class="instruction-box">
+          <p class="instruction-title">🎁 Come ritirare il premio:</p>
+          <p class="instruction-text">Mostra questa schermata alla cassa del negozio per ricevere subito il tuo cioccolatino in omaggio! 🍫</p>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button id="close-modal-btn" class="close-modal-button">CHIUDI E RITORNA</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICAZIONE JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Estrazione parametri dell'URL
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      // Parametro 'n' per il nome del negozio (Default: Beautrì)
+      const shopName = urlParams.get('n') || urlParams.get('name') || 'Beautrì';
+      
+      // Parametro 'r' per il link della recensione Google (Default: link di fallback a google)
+      const reviewUrl = urlParams.get('r') || urlParams.get('review') || 'https://www.google.com';
+
+      // Se mancano i parametri, mostra un banner informativo di anteprima per aiutare l'utente
+      if (!urlParams.get('n') && !urlParams.get('r')) {
+        document.getElementById('param-warning').classList.remove('hidden');
+      }
+
+      // 2. Personalizzazione dei testi e dei link nella pagina
+      document.getElementById('client-name').textContent = shopName;
+      
+      const qrLink = document.getElementById('review-link-qr');
+      const btnLink = document.getElementById('review-link-btn');
+      qrLink.href = reviewUrl;
+      btnLink.href = reviewUrl;
+
+      // 3. Generazione automatica del QR Code al volo
+      const qrcodeContainer = document.getElementById('qrcode');
+      qrcodeContainer.innerHTML = ''; // svuota se preesistente
+      
+      new QRCode(qrcodeContainer, {
+        text: reviewUrl,
+        width: 140,
+        height: 140,
+        colorDark: "#3d2314", // Marrone cioccolato coerente con il design
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      // ==========================================================================
+      // LOGICA E DISEGNO DELLA RUOTA DELLA FORTUNA (CANVAS)
+      // ==========================================================================
+      const canvas = document.getElementById('wheel-canvas');
+      const ctx = canvas.getContext('2d');
+      const spinButton = document.getElementById('spin-button');
+      const victoryModal = document.getElementById('victory-modal');
+      const prizeNameSpan = document.getElementById('prize-name');
+      const closeModalBtn = document.getElementById('close-modal-btn');
+      
+      let isSpinning = false;
+      let currentRotation = 0; // rotazione della ruota in radianti
+
+      // Spicchi alternati Bacio e Lindor (6 settori, rimosso Cremino)
+      const segments = [
+        { label: 'BACIO', color: '#132a4f', textColor: '#ffffff' },
+        { label: 'LINDOR', color: '#8b1319', textColor: '#ffffff' },
+        { label: 'BACIO', color: '#132a4f', textColor: '#ffffff' },
+        { label: 'LINDOR', color: '#8b1319', textColor: '#ffffff' },
+        { label: 'BACIO', color: '#132a4f', textColor: '#ffffff' },
+        { label: 'LINDOR', color: '#8b1319', textColor: '#ffffff' }
+      ];
+      
+      const numSegments = segments.length;
+      const segmentAngle = (2 * Math.PI) / numSegments;
+
+      // Funzione per disegnare la ruota in base alla rotazione corrente
+      function drawWheel(rotationAngle) {
+        const size = canvas.width;
+        const center = size / 2;
+        const radius = center - 10;
+
+        ctx.clearRect(0, 0, size, size);
+        
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(rotationAngle);
+
+        for (let i = 0; i < numSegments; i++) {
+          const angle = i * segmentAngle;
+          
+          // Disegno dello spicchio
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.arc(0, 0, radius, angle, angle + segmentAngle);
+          ctx.closePath();
+          
+          ctx.fillStyle = segments[i].color;
+          ctx.fill();
+          
+          // Separatore leggero degli spicchi
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(61, 35, 20, 0.3)';
+          ctx.stroke();
+
+          // Scrittura del testo dello spicchio
+          ctx.save();
+          ctx.rotate(angle + segmentAngle / 2);
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = segments[i].textColor;
+          ctx.font = '900 16px "Inter", sans-serif';
+          ctx.fillText(segments[i].label, radius - 30, 0);
+          ctx.restore();
+        }
+
+        ctx.restore();
+
+        // Bordo esterno oro
+        ctx.beginPath();
+        ctx.arc(center, center, radius, 0, 2 * Math.PI);
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#eab308';
+        ctx.stroke();
+      }
+
+      // Easing di rallentamento della rotazione
+      function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      // Gestore dello spin della ruota
+      function spinWheel() {
+        if (isSpinning) return;
+        
+        isSpinning = true;
+        spinButton.disabled = true;
+
+        // Scelta casuale del tipo di cioccolatino vincente: 0 = BACIO, 1 = LINDOR
+        const winningType = Math.floor(Math.random() * 2);
+        
+        // Trova gli indici dei spicchi corrispondenti al tipo vincente
+        const candidateIndices = [];
+        for (let i = 0; i < numSegments; i++) {
+          if (winningType === 0 && segments[i].label === 'BACIO') candidateIndices.push(i);
+          if (winningType === 1 && segments[i].label === 'LINDOR') candidateIndices.push(i);
+        }
+        const winningIndex = candidateIndices[Math.floor(Math.random() * candidateIndices.length)];
+        const prizeWon = segments[winningIndex].label;
+
+        // Calcola l'angolo di rotazione per far fermare l'indicatore in alto sullo spicchio corretto
+        const pointerOffset = 1.5 * Math.PI; // ore 12
+        const targetSegmentCenter = winningIndex * segmentAngle + (segmentAngle / 2);
+        
+        // Da 5 a 8 giri completi prima dello stop
+        const extraSpins = 5 + Math.floor(Math.random() * 4);
+        const targetRotation = pointerOffset - targetSegmentCenter + (extraSpins * 2 * Math.PI);
+        
+        const startRotation = currentRotation % (2 * Math.PI);
+        const rotationDiff = targetRotation - startRotation;
+        
+        const duration = 4000; // 4 secondi
+        const startTime = performance.now();
+
+        function animate(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          
+          const ease = easeOutCubic(progress);
+          currentRotation = startRotation + (rotationDiff * ease);
+          
+          drawWheel(currentRotation);
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            isSpinning = false;
+            showWinner(prizeWon);
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      // Mostra modale della vittoria
+      function showWinner(prize) {
+        prizeNameSpan.textContent = prize;
+        
+        const prizeIcon = document.querySelector('.prize-icon i');
+        if (prize === 'BACIO') {
+          prizeIcon.className = 'fa-solid fa-heart text-blue-900';
+          prizeNameSpan.style.color = '#132a4f';
+        } else {
+          prizeIcon.className = 'fa-solid fa-cookie-bite text-red-700';
+          prizeNameSpan.style.color = '#8b1319';
+        }
+        
+        setTimeout(() => {
+          victoryModal.classList.remove('hidden');
+        }, 400);
+      }
+
+      function closeModal() {
+        victoryModal.classList.add('hidden');
+        spinButton.disabled = false;
+      }
+
+      // Event Listeners
+      spinButton.addEventListener('click', spinWheel);
+      closeModalBtn.addEventListener('click', closeModal);
+
+      // Disegno iniziale della ruota ferma
+      drawWheel(0);
+    });
+  </script>
+</body>
+</html>
