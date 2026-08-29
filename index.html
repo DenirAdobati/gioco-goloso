@@ -16,8 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- Libreria QRCode.js per generare i QR code al volo nel browser -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nOMQVqgTCffYd1OhcQsJH9EB434GN5E1x8RYc0lh3c98qGtHSDS51Cl8wCyeQbDPV2ARflu8Y1Mw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- Nessuna libreria esterna per il QR Code (usiamo un'API di immagini per massima affidabilità) -->
 
   <style>
     /* ==========================================================================
@@ -868,7 +867,7 @@
           <div class="qr-flex-layout">
             <div class="qr-code-wrapper">
               <a href="#" id="review-link-qr" target="_blank" class="qr-click-target">
-                <div id="qrcode" class="qrcode-graphic"></div>
+                <img id="qrcode-img" src="" alt="QR Code Recensioni" class="qrcode-graphic">
               </a>
             </div>
             
@@ -976,18 +975,9 @@
       qrLink.href = REVIEW_URL;
       btnLink.href = REVIEW_URL;
 
-      // Generazione automatica del QR Code
-      const qrcodeContainer = document.getElementById('qrcode');
-      qrcodeContainer.innerHTML = '';
-      
-      new QRCode(qrcodeContainer, {
-        text: REVIEW_URL,
-        width: 140,
-        height: 140,
-        colorDark: "#3d2314",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
+      // Generazione automatica del QR Code (tramite API immagine per evitare blocchi o caricamenti lenti di script esterni)
+      const qrcodeImg = document.getElementById('qrcode-img');
+      qrcodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=3d2314&data=${encodeURIComponent(REVIEW_URL)}`;
 
       // ==========================================================================
       // LOGICA E DISEGNO DELLA RUOTA DELLA FORTUNA (CANVAS)
