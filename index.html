@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Gioco Goloso - Recensione & Vinci</title>
   
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="https://beautri.it/favicon.ico">
+  <!-- Favicon Generica (Emoji Cioccolato in SVG, brand-neutral) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍫</text></svg>">
   
   <!-- FontAwesome per le icone -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Google Fonts: Inter per conformità con il menù digitale -->
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -75,23 +75,6 @@
 
     .hidden {
       display: none !important;
-    }
-
-    /* Warning banner when parameters are missing */
-    .warning-banner {
-      background-color: #fef2f2;
-      color: #991b1b;
-      padding: 0.75rem 1rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-align: center;
-      border-bottom: 1.5px dashed #fca5a5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      z-index: 100;
-      position: relative;
     }
 
     /* ==========================================================================
@@ -816,12 +799,6 @@
 </head>
 <body>
 
-  <!-- WARNING BANNER FOR MISSING PARAMS -->
-  <div id="param-warning" class="warning-banner hidden">
-    <i class="fa-solid fa-circle-info"></i>
-    <span>Modalità anteprima. Aggiungi i parametri <strong>?n=Nome</strong> e <strong>&r=LinkGoogle</strong> all'indirizzo per personalizzare la pagina.</span>
-  </div>
-
   <div class="app-wrapper">
     
     <!-- DRIPPING CHOCOLATE HEADER -->
@@ -897,7 +874,7 @@
             
             <div class="qr-text-wrapper">
               <h3><i class="fa-solid fa-qrcode"></i> LASCIA QUI LA TUA RECENSIONE</h3>
-              <p>Inquadra con il tuo telefono e lascia una recensione sulla tua esperienza da <span id="client-name" class="highlight-client">Beautrì</span></p>
+              <p>Inquadra con il tuo telefono e lascia una recensione sulla tua esperienza da <span id="client-name" class="highlight-client">...</span></p>
               
               <div class="stars-rating">
                 <i class="fa-solid fa-star"></i>
@@ -984,37 +961,30 @@
   <!-- APPLICAZIONE JS -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Estrazione parametri dell'URL
-      const urlParams = new URLSearchParams(window.location.search);
-      
-      // Parametro 'n' per il nome del negozio (Default: Beautrì)
-      const shopName = urlParams.get('n') || urlParams.get('name') || 'Beautrì';
-      
-      // Parametro 'r' per il link della recensione Google (Default: link di fallback a google)
-      const reviewUrl = urlParams.get('r') || urlParams.get('review') || 'https://www.google.com';
+      // ==========================================================================
+      // CONFIGURAZIONE CLIENTE (Modifica questi due valori per ogni negozio)
+      // ==========================================================================
+      const SHOP_NAME = "il nostro locale"; // Nome del negozio mostrato nella pagina
+      const REVIEW_URL = "https://g.page/r/CeVMTOh_NgKMEBM/review"; // Link recensioni Google
+      // ==========================================================================
 
-      // Se mancano i parametri, mostra un banner informativo di anteprima per aiutare l'utente
-      if (!urlParams.get('n') && !urlParams.get('r')) {
-        document.getElementById('param-warning').classList.remove('hidden');
-      }
-
-      // 2. Personalizzazione dei testi e dei link nella pagina
-      document.getElementById('client-name').textContent = shopName;
+      // Personalizzazione dei testi e dei link nella pagina
+      document.getElementById('client-name').textContent = SHOP_NAME;
       
       const qrLink = document.getElementById('review-link-qr');
       const btnLink = document.getElementById('review-link-btn');
-      qrLink.href = reviewUrl;
-      btnLink.href = reviewUrl;
+      qrLink.href = REVIEW_URL;
+      btnLink.href = REVIEW_URL;
 
-      // 3. Generazione automatica del QR Code al volo
+      // Generazione automatica del QR Code
       const qrcodeContainer = document.getElementById('qrcode');
-      qrcodeContainer.innerHTML = ''; // svuota se preesistente
+      qrcodeContainer.innerHTML = '';
       
       new QRCode(qrcodeContainer, {
-        text: reviewUrl,
+        text: REVIEW_URL,
         width: 140,
         height: 140,
-        colorDark: "#3d2314", // Marrone cioccolato coerente con il design
+        colorDark: "#3d2314",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });
@@ -1030,9 +1000,9 @@
       const closeModalBtn = document.getElementById('close-modal-btn');
       
       let isSpinning = false;
-      let currentRotation = 0; // rotazione della ruota in radianti
+      let currentRotation = 0;
 
-      // Spicchi alternati Bacio e Lindor (6 settori, rimosso Cremino)
+      // Spicchi alternati Bacio e Lindor (6 settori)
       const segments = [
         { label: 'BACIO', color: '#132a4f', textColor: '#ffffff' },
         { label: 'LINDOR', color: '#8b1319', textColor: '#ffffff' },
@@ -1045,7 +1015,6 @@
       const numSegments = segments.length;
       const segmentAngle = (2 * Math.PI) / numSegments;
 
-      // Funzione per disegnare la ruota in base alla rotazione corrente
       function drawWheel(rotationAngle) {
         const size = canvas.width;
         const center = size / 2;
@@ -1060,7 +1029,6 @@
         for (let i = 0; i < numSegments; i++) {
           const angle = i * segmentAngle;
           
-          // Disegno dello spicchio
           ctx.beginPath();
           ctx.moveTo(0, 0);
           ctx.arc(0, 0, radius, angle, angle + segmentAngle);
@@ -1069,12 +1037,10 @@
           ctx.fillStyle = segments[i].color;
           ctx.fill();
           
-          // Separatore leggero degli spicchi
           ctx.lineWidth = 2;
           ctx.strokeStyle = 'rgba(61, 35, 20, 0.3)';
           ctx.stroke();
 
-          // Scrittura del testo dello spicchio
           ctx.save();
           ctx.rotate(angle + segmentAngle / 2);
           ctx.textAlign = 'right';
@@ -1087,7 +1053,6 @@
 
         ctx.restore();
 
-        // Bordo esterno oro
         ctx.beginPath();
         ctx.arc(center, center, radius, 0, 2 * Math.PI);
         ctx.lineWidth = 8;
@@ -1095,22 +1060,18 @@
         ctx.stroke();
       }
 
-      // Easing di rallentamento della rotazione
       function easeOutCubic(t) {
         return 1 - Math.pow(1 - t, 3);
       }
 
-      // Gestore dello spin della ruota
       function spinWheel() {
         if (isSpinning) return;
         
         isSpinning = true;
         spinButton.disabled = true;
 
-        // Scelta casuale del tipo di cioccolatino vincente: 0 = BACIO, 1 = LINDOR
         const winningType = Math.floor(Math.random() * 2);
         
-        // Trova gli indici dei spicchi corrispondenti al tipo vincente
         const candidateIndices = [];
         for (let i = 0; i < numSegments; i++) {
           if (winningType === 0 && segments[i].label === 'BACIO') candidateIndices.push(i);
@@ -1119,18 +1080,16 @@
         const winningIndex = candidateIndices[Math.floor(Math.random() * candidateIndices.length)];
         const prizeWon = segments[winningIndex].label;
 
-        // Calcola l'angolo di rotazione per far fermare l'indicatore in alto sullo spicchio corretto
         const pointerOffset = 1.5 * Math.PI; // ore 12
         const targetSegmentCenter = winningIndex * segmentAngle + (segmentAngle / 2);
         
-        // Da 5 a 8 giri completi prima dello stop
         const extraSpins = 5 + Math.floor(Math.random() * 4);
         const targetRotation = pointerOffset - targetSegmentCenter + (extraSpins * 2 * Math.PI);
         
         const startRotation = currentRotation % (2 * Math.PI);
         const rotationDiff = targetRotation - startRotation;
         
-        const duration = 4000; // 4 secondi
+        const duration = 4000;
         const startTime = performance.now();
 
         function animate(currentTime) {
@@ -1153,7 +1112,6 @@
         requestAnimationFrame(animate);
       }
 
-      // Mostra modale della vittoria
       function showWinner(prize) {
         prizeNameSpan.textContent = prize;
         
@@ -1176,11 +1134,9 @@
         spinButton.disabled = false;
       }
 
-      // Event Listeners
       spinButton.addEventListener('click', spinWheel);
       closeModalBtn.addEventListener('click', closeModal);
 
-      // Disegno iniziale della ruota ferma
       drawWheel(0);
     });
   </script>
